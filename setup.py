@@ -33,7 +33,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    description="Cycle gan implementaiton",
+    description="Cycle gan implementation",
     entry_points={
         'console_scripts': [
             'cyclegan=cyclegan.cli:main',
@@ -45,7 +45,8 @@ setup(
     include_package_data=True,
     keywords='cyclegan',
     name='cyclegan',
-    packages=find_packages(include=['cyclegan']),
+    packages=find_packages('src', include=['cyclegan']),
+    package_dir={"": "src"},
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
