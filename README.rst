@@ -3,19 +3,6 @@ cyclegan
 ========
 
 
-.. image:: https://img.shields.io/pypi/v/cyclegan.svg
-        :target: https://pypi.python.org/pypi/cyclegan
-
-.. image:: https://img.shields.io/travis/ririw/cyclegan.svg
-        :target: https://travis-ci.org/ririw/cyclegan
-
-.. image:: https://readthedocs.org/projects/cyclegan/badge/?version=latest
-        :target: https://cyclegan.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-
-
 Cycle gan implementaiton
 
 
