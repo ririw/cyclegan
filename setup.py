@@ -16,7 +16,7 @@ requirements = [
     'torch>=1.0.0',
     'torchvision>=0.2.1',
     'fs',
-    'scipy', 'numpy', 'attrs'
+    'scipy', 'numpy', 'attrs', 'tqdm', 'matplotlib'
 ]
 
 setup_requirements = []

@@ -23,5 +23,6 @@ class MNISTMNISTTransform(nn.Module):  # type: ignore
         x = self.upconv_block(x)
         x = self.resnet_blocks.forward(x)
         x = self.downconv_block(x)
+        x = nn.Sigmoid()(x)
 
         return x.squeeze(1)

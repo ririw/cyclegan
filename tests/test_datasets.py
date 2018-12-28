@@ -6,7 +6,7 @@ from cyclegan import datasets
 
 
 def test_mnist_size() -> None:
-    train_data = datasets.MNIST.train_data
+    train_data = datasets.mnist().train_data
     v = train_data[0]
     nose.tools.assert_is_instance(v, torch.Tensor)
     nose.tools.assert_list_equal(
@@ -16,7 +16,7 @@ def test_mnist_size() -> None:
 
 
 def test_svhn_size() -> None:
-    train_data = datasets.SVHN.data
+    train_data = datasets.svhn().data
     v = train_data[0]
     nose.tools.assert_is_instance(v, np.ndarray)
     nose.tools.assert_list_equal(

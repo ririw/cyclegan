@@ -9,9 +9,9 @@ from cyclegan import datasets, discriminators
 def test_mnist_is_zero() -> None:
     trf = discriminators.MNISTDiscriminator()
 
-    train_sample = np.random.choice(len(datasets.MNIST), size=32)
-    raw_x = datasets.MNIST.train_data[train_sample]
-    raw_y = (datasets.MNIST.train_labels[train_sample] == 0)
+    train_sample = np.random.choice(len(datasets.mnist()), size=32)
+    raw_x = datasets.mnist().train_data[train_sample]
+    raw_y = (datasets.mnist().train_labels[train_sample] == 0)
     x = raw_x.type(torch.float32) / 255
     y = raw_y.type(torch.float32)
 

@@ -7,8 +7,8 @@ from cyclegan import datasets, generators
 
 def test_mnist_mnist() -> None:
     trf = generators.MNISTMNISTTransform()
-    x = datasets.MNIST.train_data[:32].type(torch.float32) / 255
-    y = datasets.MNIST.train_data[32:64].type(torch.float32) / 255
+    x = datasets.mnist().train_data[:32].type(torch.float32) / 255
+    y = datasets.mnist().train_data[32:64].type(torch.float32) / 255
 
     trf_opt = optim.Adam(trf.parameters())
     errs = []

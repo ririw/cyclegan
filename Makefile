@@ -50,9 +50,15 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint: ## check style with flake8
+check: lint flake types test
+
+flake:
 	flake8 src tests
+
+lint:
 	pylint src
+
+types:
 	mypy --ignore-missing-imports --strict src/cyclegan tests
 
 test: ## run tests quickly with the default Python
