@@ -89,11 +89,9 @@ class CycleGanTrainer:
             nn.MSELoss()(1, how_a_is_a_from_b) +
             nn.MSELoss()(1, how_b_is_b_from_a))
         loss_cyc = (
-            nn.MSELoss()(a_domain_draw, a_from_b_from_a) +
-            nn.MSELoss()(b_domain_draw, b_from_a_from_b))
+            torch.mean(torch.abs(a_domain_draw - a_from_b_from_a)) +
+            torch.mean(torch.abs(b_domain_draw - b_from_a_from_b)))
 
-        print(loss_discrim)
-        print(loss_cyc)
         total_gen_loss = loss_discrim + loss_cyc
         total_gen_loss.backward()
         self.generator_trainer.step()
@@ -102,20 +100,30 @@ class CycleGanTrainer:
                     a_data: torch.Tensor,
                     b_data: torch.Tensor,
                     results_fs: FS) -> None:
+        # pylint: disable=too-many-locals
         import matplotlib.pyplot as plt
         with torch.no_grad():
             a_domain_draw, b_domain_draw = self.make_batch(a_data, b_data)
             a_domain_draw = a_domain_draw[:4]
             b_domain_draw = b_domain_draw[:4]
 
-            b_from_a = self.a_dom.trf_to(a_domain_draw).numpy()
-            a_from_b = self.b_dom.trf_to(b_domain_draw).numpy()
+            b_from_a = self.a_dom.trf_to(a_domain_draw)
+            a_from_b = self.b_dom.trf_to(b_domain_draw)
 
-            a_orig = a_domain_draw.numpy()
-            b_orig = b_domain_draw.numpy()
+            a_from_b_from_a = self.b_dom.trf_to(b_from_a)
+            b_from_a_from_b = self.a_dom.trf_to(a_from_b)
 
-        a_and_b = np.concatenate([b_from_a, a_orig], 1).reshape((4*56, 28))
-        b_and_a = np.concatenate([a_from_b, b_orig], 1).reshape((4*56, 28))
+            a_orig = a_domain_draw
+            b_orig = b_domain_draw
+
+        a_and_b = np.concatenate([
+            a_from_b_from_a.numpy(),
+            b_from_a.numpy(),
+            a_orig.numpy()], 1).reshape((4*28*3, 28))
+        b_and_a = np.concatenate([
+            b_from_a_from_b.numpy(),
+            a_from_b.numpy(),
+            b_orig.numpy()], 1).reshape((4*28*3, 28))
 
         with results_fs.open('a_sample.png', 'wb') as f:
             plt.matshow(a_and_b)

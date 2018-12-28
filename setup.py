@@ -22,7 +22,10 @@ requirements = [
 setup_requirements = []
 
 test_requirements = [
-    'nose'
+    'nose',
+    'mypy',
+    'pylint',
+    'flake8',
 ]
 
 setup(

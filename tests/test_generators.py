@@ -12,7 +12,7 @@ def test_mnist_mnist() -> None:
 
     trf_opt = optim.Adam(trf.parameters())
     errs = []
-    for _ in range(20):
+    for _ in range(32):
         trf_opt.zero_grad()
         y_gen = trf.forward(x)
         err = nn.MSELoss()(y_gen, y)
