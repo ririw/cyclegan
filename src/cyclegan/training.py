@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-import typing
 import itertools
+import typing
+
+import attr
 import numpy as np
 from fs.base import FS
 from torch import nn, optim
 import torch
-import attr
 
 
 @attr.s
@@ -58,10 +59,10 @@ class CycleGanTrainer:
         how_a_is_a = self.a_dom.in_dom(a_domain_draw)
 
         loss_discrim = (
-            torch.functional.norm(how_a_is_a - 1) +
-            torch.functional.norm(how_b_is_b - 1) +
-            torch.functional.norm(how_a_is_a_from_b) +
-            torch.functional.norm(how_b_is_b_from_a)
+            nn.MSELoss()(1, how_a_is_a) +
+            nn.MSELoss()(1, how_b_is_b) +
+            nn.MSELoss()(0, how_a_is_a_from_b) +
+            nn.MSELoss()(0, how_b_is_b_from_a)
         )
 
         loss_discrim.backward()
@@ -85,12 +86,14 @@ class CycleGanTrainer:
         b_from_a_from_b = self.a_dom.trf_to(self.b_dom.trf_to(b_domain_draw))
 
         loss_discrim = (
-            torch.functional.norm(how_a_is_a_from_b - 1) +
-            torch.functional.norm(how_b_is_b_from_a - 1))
+            nn.MSELoss()(1, how_a_is_a_from_b) +
+            nn.MSELoss()(1, how_b_is_b_from_a))
         loss_cyc = (
-            torch.functional.norm(a_from_b_from_a - a_domain_draw) +
-            torch.functional.norm(b_from_a_from_b - b_domain_draw))
+            nn.MSELoss()(a_domain_draw, a_from_b_from_a) +
+            nn.MSELoss()(b_domain_draw, b_from_a_from_b))
 
+        print(loss_discrim)
+        print(loss_cyc)
         total_gen_loss = loss_discrim + loss_cyc
         total_gen_loss.backward()
         self.generator_trainer.step()
@@ -117,7 +120,9 @@ class CycleGanTrainer:
         with results_fs.open('a_sample.png', 'wb') as f:
             plt.matshow(a_and_b)
             plt.savefig(f, format='png')
+            plt.close('all')
 
         with results_fs.open('b_sample.png', 'wb') as f:
             plt.matshow(b_and_a)
             plt.savefig(f, format='png')
+            plt.close('all')

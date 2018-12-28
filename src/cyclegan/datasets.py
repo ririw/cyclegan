@@ -4,20 +4,22 @@ import torchvision
 data_location = fs.appfs.UserCacheFS('cyclegan')
 
 _mnist: torchvision.datasets.MNIST = None
-_svhn = None
+_svhn: torchvision.datasets.SVHN = None
 
 
-def mnist() -> torchvision.datasets.MNIST:
+def mnist(download: bool = False) -> torchvision.datasets.MNIST:
     global _mnist
     if _mnist is None:
         with data_location.makedirs('MNIST', recreate=True) as loc:
-            _mnist = torchvision.datasets.MNIST(loc.getsyspath(''))
+            _mnist = torchvision.datasets.MNIST(
+                loc.getsyspath(''), download=download)
     return _mnist
 
 
-def svhn() -> torchvision.datasets.SVHN:
+def svhn(download: bool = False) -> torchvision.datasets.SVHN:
     global _svhn
     if _svhn is None:
         with data_location.makedirs('SVHN', recreate=True) as loc:
-            _svhn = torchvision.datasets.SVHN(loc.getsyspath(''))
+            _svhn = torchvision.datasets.SVHN(
+                loc.getsyspath(''), download=download)
     return _svhn

@@ -22,8 +22,8 @@ def main() -> int:
         discriminators.MNISTDiscriminator()
     )
 
-    train_x = datasets.mnist().train_data
-    train_y = datasets.mnist().train_labels
+    train_x = datasets.mnist(download=True).train_data
+    train_y = datasets.mnist(download=True).train_labels
     a_data = (train_x[train_y < 5].type(torch.float32).contiguous()) / 255
     b_data = (train_x[train_y >= 5]).type(torch.float32).contiguous() / 255
 
