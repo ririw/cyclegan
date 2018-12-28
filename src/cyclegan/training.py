@@ -133,14 +133,24 @@ class CycleGanTrainer:
             a_orig = a_domain_draw
             b_orig = b_domain_draw
 
+        if self._use_cuda:
+            a_from_b_from_a = a_from_b_from_a.cpu()
+            b_from_a = b_from_a.cpu()
+            a_orig = a_orig.cpu()
+            b_from_a_from_b = b_from_a_from_b.cpu()
+            a_from_b = a_from_b.cpu()
+            b_orig = b_orig.cpu()
+
         a_and_b = np.concatenate([
-            a_from_b_from_a.numpy(),
+            a_orig.numpy(),
             b_from_a.numpy(),
-            a_orig.numpy()], 1).reshape((4*28*3, 28))
+            a_from_b_from_a.numpy(),
+        ], 1).reshape((4*28*3, 28))
         b_and_a = np.concatenate([
-            b_from_a_from_b.numpy(),
+            b_orig.numpy(),
             a_from_b.numpy(),
-            b_orig.numpy()], 1).reshape((4*28*3, 28))
+            b_from_a_from_b.numpy(),
+        ], 1).reshape((4*28*3, 28))
 
         with results_fs.open('a_sample.png', 'wb') as f:
             plt.matshow(a_and_b)

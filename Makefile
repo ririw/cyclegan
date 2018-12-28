@@ -55,6 +55,17 @@ clean-test: ## remove test and coverage artifacts
 
 check: flake lint types test
 
+sync:
+	rsync --exclude tests/__pycache__ \
+		  --exclude src/cyclegan/__pycache__ \
+		  --exclude .git \
+		  --exclude docs \
+		  --exclude .mypy_cache \
+		  --exclude .idea \
+		  --exclude .cache \
+		  -r --progress -a \
+		  results . riri@learnbox:~/Documents/cyclegan
+
 flake:
 	flake8 src tests
 

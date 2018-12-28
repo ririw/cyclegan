@@ -42,6 +42,6 @@ with fs.open_fs('results', create=True) as res_fs:
             with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
                 trainer.save_sample(a_data, b_data, step_fs)
 
-            with res_fs.open('fweights.pkl', 'wb') as f:
+            with res_fs.open('weights.pkl', 'wb') as f:
                 torch.save(a_dom, f)
                 torch.save(b_dom, f)

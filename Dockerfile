@@ -12,11 +12,13 @@ RUN mkdir /app
 COPY cache-datasets.py /root/cache-datasets.py
 RUN python /root/cache-datasets.py
 
-RUN pip3 install torchvision torch click nose fs scipy numpy attrs pylint flake8 mypy
-RUN pip3 install matplotlib
+RUN pip3 install torchvision torch click nose \
+                 fs scipy numpy attrs pylint \
+                 flake8 mypy matplotlib tqdm
+
 COPY . /app
 WORKDIR /app
 RUN python setup.py develop
 RUN make check
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT cyclegan

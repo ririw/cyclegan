@@ -13,7 +13,8 @@ from cyclegan import training, generators, discriminators, datasets
 
 
 @click.command()
-def main() -> int:
+@click.option('--cuda/--no-cuda', default=False)
+def main(cuda: bool) -> int:
     a_dom = training.DomainPair(
         generators.MNISTMNISTTransform(),
         discriminators.MNISTDiscriminator()
@@ -25,36 +26,32 @@ def main() -> int:
 
     train_x = datasets.mnist(download=True).train_data
     train_y = datasets.mnist(download=True).train_labels
-    a_data = (train_x[train_y < 5].type(torch.float32).contiguous()) / 255
-    b_data = (train_x[train_y >= 5]).type(torch.float32).contiguous() / 255
+    a_data = (train_x[(train_y == 1) | (train_y == 3)].type(torch.float32).contiguous()) / 255
+    b_data = (train_x[(train_y == 7) | (train_y == 8)]).type(torch.float32).contiguous() / 255
 
-    trainer = training.CycleGanTrainer(a_dom, b_dom)
+    trainer = training.CycleGanTrainer(a_dom, b_dom, use_cuda=cuda)
 
     with fs.open_fs('file://./results', create=True) as res_fs:
-        for i in tqdm(range(1024)):
-            train_step(a_data, a_dom, b_data, b_dom, i, res_fs, trainer)
+        for i in tqdm(range(4096)):
+            train_step(a_data, b_data, i, res_fs, trainer)
 
+        with res_fs.open('weights.pkl', 'wb') as f:
+            torch.save(a_dom, f)
+            torch.save(b_dom, f)
     return 0
 
 
-# pylint: disable=too-many-arguments
 def train_step(a_data: torch.Tensor,
-               a_dom: training.DomainPair,
                b_data: torch.Tensor,
-               b_dom: training.DomainPair,
                i: int,
                res_fs: FS,
                trainer: training.CycleGanTrainer) -> None:
     trainer.step_discrim(a_data, b_data)
     trainer.step_gen(a_data, b_data)
-    if i % 4 == 0:
+    if i % 8 == 0:
         with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
             trainer.save_sample(a_data, b_data, step_fs)
 
-        with res_fs.open('fweights.pkl', 'wb') as f:
-            torch.save(a_dom, f)
-            torch.save(b_dom, f)
-
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    sys.exit(main())  # pylint: disable=no-value-for-parameter
