@@ -53,7 +53,7 @@ clean-test: ## remove test and coverage artifacts
 lint: ## check style with flake8
 	flake8 src tests
 	pylint src
-	mypy src/cyclegan tests
+	mypy --ignore-missing-imports --strict src/cyclegan tests
 
 test: ## run tests quickly with the default Python
 	nosetests

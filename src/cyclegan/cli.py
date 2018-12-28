@@ -6,7 +6,7 @@ import click
 
 
 @click.command()
-def main():
+def main() -> int:
     """Console script for cyclegan."""
     click.echo("Replace this message by putting your code into "
                "cyclegan.cli.main")

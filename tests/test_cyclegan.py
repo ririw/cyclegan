@@ -6,7 +6,7 @@ from click.testing import CliRunner
 from cyclegan import cli
 
 
-def test_command_line_interface():
+def test_command_line_interface() -> None:
     """Test the CLI."""
     runner = CliRunner()
     result = runner.invoke(cli.main)

@@ -11,11 +11,19 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0', ]
+requirements = [
+    'Click>=6.0',
+    'torch>=1.0.0',
+    'torchvision>=0.2.1',
+    'fs',
+    'scipy', 'numpy', 'attrs'
+]
 
 setup_requirements = []
 
-test_requirements = []
+test_requirements = [
+    'nose'
+]
 
 setup(
     author="Richard Weiss",
