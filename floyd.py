@@ -29,18 +29,19 @@ train_y = datasets.mnist(download=True).train_labels
 a_data = (train_x[train_y < 5].type(torch.float32).contiguous()) / 255
 b_data = (train_x[train_y >= 5]).type(torch.float32).contiguous() / 255
 
-trainer = training.CycleGanTrainer(a_dom, b_dom)
+trainer = training.CycleGanTrainer(
+    a_dom, b_dom,
+    batch_size=64, use_cuda=False)
 
-with fs.open_fs('file://./results', create=True) as res_fs:
-    for i in tqdm(range(1024), disable=True):
+with fs.open_fs('results', create=True) as res_fs:
+    for i in tqdm(range(4096), disable=True):
         trainer.step_discrim(a_data, b_data)
         trainer.step_gen(a_data, b_data)
         if i % 4 == 0:
-            logging.info('Step {} of {}'.format(i, 1024))
+            logging.info('Step {} of {}'.format(i, 4096))
             with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
                 trainer.save_sample(a_data, b_data, step_fs)
 
             with res_fs.open('fweights.pkl', 'wb') as f:
                 torch.save(a_dom, f)
                 torch.save(b_dom, f)
-

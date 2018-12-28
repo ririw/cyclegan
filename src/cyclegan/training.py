@@ -19,16 +19,29 @@ class CycleGanTrainer:
     def __init__(self,
                  a_dom: DomainPair,
                  b_dom: DomainPair,
-                 batch_size: int = 32):
+                 batch_size: int = 32,
+                 use_cuda: int = False):
         super().__init__()
+        self._use_cuda = use_cuda
         self.batch_size = batch_size
-        self.a_dom = a_dom
-        self.b_dom = b_dom
+        if use_cuda:
+            self.a_dom = attr.evolve(
+                a_dom,
+                trf_to=a_dom.trf_to.cuda(),
+                in_dom=a_dom.in_dom.cuda())
+            self.b_dom = attr.evolve(
+                b_dom,
+                trf_to=b_dom.trf_to.cuda(),
+                in_dom=b_dom.in_dom.cuda())
+        else:
+            self.b_dom = b_dom
+            self.a_dom = a_dom
 
         gen_params = itertools.chain(self.a_dom.trf_to.parameters(),
                                      self.b_dom.trf_to.parameters())
         is_params = itertools.chain(self.a_dom.in_dom.parameters(),
                                     self.b_dom.in_dom.parameters())
+
         self.generator_trainer = optim.Adam(gen_params)
         self.is_trainer = optim.Adam(is_params)
 
@@ -41,6 +54,10 @@ class CycleGanTrainer:
 
         a_domain_draw = a_data[a_batch_ix]
         b_domain_draw = b_data[b_batch_ix]
+
+        if self._use_cuda:
+            a_domain_draw = a_domain_draw.cuda()
+            b_domain_draw = b_domain_draw.cuda()
         return a_domain_draw, b_domain_draw
 
     def step_discrim(self,

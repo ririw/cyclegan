@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """Console script for cyclegan."""
-import logging
 import sys
 
 import click
 import fs
+from fs.base import FS
 import torch
 from tqdm import tqdm
 
@@ -32,17 +32,28 @@ def main() -> int:
 
     with fs.open_fs('file://./results', create=True) as res_fs:
         for i in tqdm(range(1024)):
-            trainer.step_discrim(a_data, b_data)
-            trainer.step_gen(a_data, b_data)
-            if i % 4 == 0:
-                with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
-                    trainer.save_sample(a_data, b_data, step_fs)
-
-                with res_fs.open('fweights.pkl', 'wb') as f:
-                    torch.save(a_dom, f)
-                    torch.save(b_dom, f)
+            train_step(a_data, a_dom, b_data, b_dom, i, res_fs, trainer)
 
     return 0
+
+
+# pylint: disable=too-many-arguments
+def train_step(a_data: torch.Tensor,
+               a_dom: training.DomainPair,
+               b_data: torch.Tensor,
+               b_dom: training.DomainPair,
+               i: int,
+               res_fs: FS,
+               trainer: training.CycleGanTrainer) -> None:
+    trainer.step_discrim(a_data, b_data)
+    trainer.step_gen(a_data, b_data)
+    if i % 4 == 0:
+        with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
+            trainer.save_sample(a_data, b_data, step_fs)
+
+        with res_fs.open('fweights.pkl', 'wb') as f:
+            torch.save(a_dom, f)
+            torch.save(b_dom, f)
 
 
 if __name__ == "__main__":

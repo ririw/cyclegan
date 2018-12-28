@@ -1,7 +1,7 @@
 # see: https://docs.floydhub.com/floyd_config
 # All supported configs:
 #
-machine: cpu
+machine: cpu2
 env: pytorch-1.0
 #input:
 #  - destination: input
@@ -9,7 +9,7 @@ env: pytorch-1.0
 #  - foo/datasets/yelp-food-test/1:test
 #description: this is a test
 max_runtime: 3600
-command: python src/cyclegan/floyd.py
+command: python floyd.py
 
 # You can also define multiple tasks to use with --task argument:
 #
