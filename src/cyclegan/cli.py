@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Console script for cyclegan."""
+import logging
 import sys
 
 import click
@@ -30,15 +31,16 @@ def main() -> int:
     trainer = training.CycleGanTrainer(a_dom, b_dom)
 
     with fs.open_fs('file://./results', create=True) as res_fs:
-        for i in tqdm(range(128)):
+        for i in tqdm(range(1024)):
             trainer.step_discrim(a_data, b_data)
             trainer.step_gen(a_data, b_data)
-            with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
-                trainer.save_sample(a_data, b_data, step_fs)
+            if i % 4 == 0:
+                with res_fs.makedirs('{:04d}'.format(i), recreate=True) as step_fs:
+                    trainer.save_sample(a_data, b_data, step_fs)
 
-        with res_fs.open('weights.pkl', 'wb') as f:
-            torch.save(a_dom, f)
-            torch.save(b_dom, f)
+                with res_fs.open('fweights.pkl', 'wb') as f:
+                    torch.save(a_dom, f)
+                    torch.save(b_dom, f)
 
     return 0
 

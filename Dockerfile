@@ -18,3 +18,5 @@ COPY . /app
 WORKDIR /app
 RUN python setup.py develop
 RUN make check
+
+ENTRYPOINT /bin/bash
