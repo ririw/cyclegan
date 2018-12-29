@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """Console script for cyclegan."""
+import datetime
 import sys
 
 import click
@@ -9,12 +10,13 @@ from fs.base import FS
 import torch
 from tqdm import tqdm
 
-from cyclegan import training, generators, discriminators, datasets
+from cyclegan import training, generators, discriminators, datasets, monitoring
 
 
 @click.command()
-@click.option('--cuda/--no-cuda', default=False)
-def main(cuda: bool) -> int:
+@click.option('--cuda/--no-cuda', help='Use CUDA', default=False)
+@click.option('--debug/--no-debug', help='debug mode', default=False)
+def main(cuda: bool, debug: bool) -> int:
     a_dom = training.DomainPair(
         generators.MNISTMNISTTransform(),
         discriminators.MNISTDiscriminator()
@@ -23,17 +25,25 @@ def main(cuda: bool) -> int:
         generators.MNISTMNISTTransform(),
         discriminators.MNISTDiscriminator()
     )
+    monitoring.Writer.init('./results/{}'.format(datetime.datetime.now()))
 
     train_x = datasets.mnist(download=True).train_data
     train_y = datasets.mnist(download=True).train_labels
-    a_data = (train_x[(train_y == 1) | (train_y == 3)].type(torch.float32).contiguous()) / 255
-    b_data = (train_x[(train_y == 7) | (train_y == 8)]).type(torch.float32).contiguous() / 255
+    grp_a = (train_y == 3) | (train_y == 1)
+    grp_b = (train_y == 8) | (train_y == 7)
+    a_data = (train_x[grp_a].type(torch.float32).contiguous()) / 255
+    b_data = (train_x[grp_b]).type(torch.float32).contiguous() / 255
 
     trainer = training.CycleGanTrainer(a_dom, b_dom, use_cuda=cuda)
 
+    n_iter = 4 if debug else 8192
     with fs.open_fs('file://./results', create=True) as res_fs:
-        for i in tqdm(range(4096)):
-            train_step(a_data, b_data, i, res_fs, trainer)
+        for i in tqdm(range(n_iter)):
+            monitoring.Writer.step = i
+            try:
+                train_step(a_data, b_data, i, res_fs, trainer)
+            except KeyboardInterrupt:
+                break
 
         with res_fs.open('weights.pkl', 'wb') as f:
             torch.save(a_dom, f)

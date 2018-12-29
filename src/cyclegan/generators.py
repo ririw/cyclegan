@@ -10,20 +10,20 @@ class MNISTMNISTTransform(nn.Module):  # type: ignore
             nn.BatchNorm2d(16),
             nn.PReLU(),
 
-            nn.Conv2d(16, 32, 3),
+            nn.Conv2d(16, 32, 5),
             nn.BatchNorm2d(32),
             nn.PReLU(),
 
-            nn.Conv2d(32, 64, 5),
-            nn.BatchNorm2d(64),
+            nn.Conv2d(32, 32, 7),
+            nn.BatchNorm2d(32),
             nn.PReLU()
         )
         self.downconv_block = nn.Sequential(
-            nn.ConvTranspose2d(64, 32, 5),
+            nn.ConvTranspose2d(32, 32, 7),
             nn.BatchNorm2d(32),
             nn.PReLU(),
 
-            nn.ConvTranspose2d(32, 16, 3),
+            nn.ConvTranspose2d(32, 16, 5),
             nn.BatchNorm2d(16),
             nn.PReLU(),
 

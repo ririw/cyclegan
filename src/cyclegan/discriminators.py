@@ -7,18 +7,21 @@ class MNISTDiscriminator(nn.Module):  # type: ignore
         super().__init__()
 
         self.conv_layers = nn.Sequential(
-            nn.Conv2d(1, 32, 3, padding=1),
-            nn.BatchNorm2d(32),
+            nn.Conv2d(1, 16, 3),
+            nn.BatchNorm2d(16),
             nn.PReLU(),
 
-            nn.Conv2d(32, 32, 5),
-            nn.BatchNorm2d(32),
+            nn.Conv2d(16, 16, 5),
+            nn.BatchNorm2d(16),
             nn.PReLU(),
         )
 
         self.dense_layers = nn.Sequential(
             nn.Dropout(0.5),
-            nn.Linear(18432, 1),
+            nn.Linear(7744, 512),
+            nn.PReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, 1),
             nn.Sigmoid(),
         )
 
