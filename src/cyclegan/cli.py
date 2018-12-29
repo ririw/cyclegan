@@ -18,7 +18,7 @@ from cyclegan import training, generators, discriminators, datasets, monitoring
 @click.option('--debug/--no-debug', help='debug mode', default=False)
 def main(cuda: bool, debug: bool) -> int:
     a_dom = training.DomainPair(
-        generators.MNISTMNISTTransform(),
+        generators.FashionMNISTMNISTTransform(),
         discriminators.MNISTDiscriminator()
     )
     b_dom = training.DomainPair(

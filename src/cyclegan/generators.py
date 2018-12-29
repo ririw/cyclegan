@@ -38,3 +38,41 @@ class MNISTMNISTTransform(nn.Module):  # type: ignore
         x = self.downconv_block(x)
 
         return x.squeeze(1)
+
+
+class FashionMNISTMNISTTransform(nn.Module):  # type: ignore
+    def __init__(self: 'MNISTMNISTTransform') -> None:
+        super().__init__()
+        self.upconv_block = nn.Sequential(
+            nn.Conv2d(1, 32, 3),
+            nn.BatchNorm2d(32),
+            nn.PReLU(),
+
+            nn.Conv2d(32, 64, 5),
+            nn.BatchNorm2d(64),
+            nn.PReLU(),
+
+            nn.Conv2d(64, 64, 7),
+            nn.BatchNorm2d(64),
+            nn.PReLU()
+        )
+        self.downconv_block = nn.Sequential(
+            nn.ConvTranspose2d(64, 64, 7),
+            nn.BatchNorm2d(64),
+            nn.PReLU(),
+
+            nn.ConvTranspose2d(64, 32, 5),
+            nn.BatchNorm2d(32),
+            nn.PReLU(),
+
+            nn.ConvTranspose2d(32, 1, 3),
+            nn.Sigmoid()
+        )
+
+    # pylint: disable=arguments-differ
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.unsqueeze(1)
+        x = self.upconv_block(x)
+        x = self.downconv_block(x)
+
+        return x.squeeze(1)
