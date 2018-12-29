@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.6
 
 # These lines install the minimum required to
 # run the data-download script. By doing this

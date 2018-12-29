@@ -16,9 +16,8 @@ class Writer:
                    val: float,
                    global_step: typing.Optional[int] = None,
                    walltime: typing.Optional[float] = None) -> None:
-        if cls._writer is None:
-            return None
-        cls._writer.add_scalar(name, val, global_step, walltime)
+        if cls._writer is not None:
+            cls._writer.add_scalar(name, val, global_step, walltime)
 
     @classmethod
     def add_image(cls,
@@ -26,18 +25,16 @@ class Writer:
                   img_tensor: np.ndarray,
                   global_step: typing.Optional[int] = None,
                   walltime: typing.Optional[float] = None) -> None:
-        if cls._writer is None:
-            return None
-        cls._writer.add_image(tag, img_tensor, global_step, walltime)
+        if cls._writer is not None:
+            cls._writer.add_image(tag, img_tensor, global_step, walltime)
 
     @classmethod
     def add_graph(cls,
                   model: torch.nn.Module,
                   input_to_model: torch.Tensor = None,
                   verbose: bool = False) -> None:
-        if cls._writer is None:
-            return None
-        cls._writer.add_graph(model, input_to_model, verbose)
+        if cls._writer is not None:
+            cls._writer.add_graph(model, input_to_model, verbose)
 
     @classmethod
     def init(cls, out_dir: typing.Optional[str] = None) -> None:

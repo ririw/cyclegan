@@ -36,7 +36,7 @@ def main(cuda: bool, debug: bool) -> int:
 
     n_iter = 4 if debug else 8192
     with fs.open_fs('file://./results', create=True) as res_fs:
-        for i in tqdm(range(n_iter)):
+        for i in tqdm(range(n_iter), smoothing=0.6):
             monitoring.Writer.step = i
             try:
                 train_step(a_data, b_data, i, res_fs, trainer)

@@ -65,6 +65,7 @@ class CycleGanTrainer:
     def step_discrim(self,
                      a_data: torch.Tensor,
                      b_data: torch.Tensor) -> None:
+        # pylint: disable=too-many-locals
         self.is_trainer.zero_grad()
         self.generator_trainer.zero_grad()
 
