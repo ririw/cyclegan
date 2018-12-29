@@ -53,8 +53,6 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-check: flake lint types test
-
 sync:
 	rsync --exclude tests/__pycache__ \
 		  --exclude src/cyclegan/__pycache__ \
@@ -65,6 +63,8 @@ sync:
 		  --exclude .cache \
 		  -r --progress -a \
 		  results . riri@learnbox:~/Documents/cyclegan
+
+check: flake types lint test
 
 flake:
 	flake8 src tests

@@ -27,12 +27,10 @@ def main(cuda: bool, debug: bool) -> int:
     )
     monitoring.Writer.init('./results/{}'.format(datetime.datetime.now()))
 
-    train_x = datasets.mnist(download=True).train_data
-    train_y = datasets.mnist(download=True).train_labels
-    grp_a = (train_y == 3) | (train_y == 1)
-    grp_b = (train_y == 8) | (train_y == 7)
-    a_data = (train_x[grp_a].type(torch.float32).contiguous()) / 255
-    b_data = (train_x[grp_b]).type(torch.float32).contiguous() / 255
+    train_a = datasets.mnist(download=True).train_data
+    train_b = datasets.fmnist(download=True).train_data
+    a_data = train_a.type(torch.float32).contiguous() / 255
+    b_data = train_b.type(torch.float32).contiguous() / 255
 
     trainer = training.CycleGanTrainer(a_dom, b_dom, use_cuda=cuda)
 
