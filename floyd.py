@@ -15,11 +15,11 @@ mpl.use('Agg')
 from cyclegan import training, generators, discriminators, datasets
 
 logging.basicConfig(level=logging.INFO)
-a_dom = training.DomainPair(
+a_dom = training.Domain(
     generators.MNISTMNISTTransform(),
     discriminators.MNISTDiscriminator()
 )
-b_dom = training.DomainPair(
+b_dom = training.Domain(
     generators.MNISTMNISTTransform(),
     discriminators.MNISTDiscriminator()
 )

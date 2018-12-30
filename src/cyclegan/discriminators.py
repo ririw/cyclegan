@@ -50,7 +50,7 @@ class SVHNDiscriminator(nn.Module):  # type: ignore
 
         self.dense_layers = nn.Sequential(
             nn.Dropout(0.5),
-            nn.Linear(7744, 512),
+            nn.Linear(10816, 512),
             nn.PReLU(),
             nn.Dropout(0.5),
             nn.Linear(512, 1),

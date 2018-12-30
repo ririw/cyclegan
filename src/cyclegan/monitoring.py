@@ -16,6 +16,9 @@ class Writer:
                    val: float,
                    global_step: typing.Optional[int] = None,
                    walltime: typing.Optional[float] = None) -> None:
+        if global_step is None:
+            global_step = cls.step
+
         if cls._writer is not None:
             cls._writer.add_scalar(name, val, global_step, walltime)
 
@@ -25,6 +28,9 @@ class Writer:
                   img_tensor: np.ndarray,
                   global_step: typing.Optional[int] = None,
                   walltime: typing.Optional[float] = None) -> None:
+        if global_step is None:
+            global_step = cls.step
+
         if cls._writer is not None:
             cls._writer.add_image(tag, img_tensor, global_step, walltime)
 
@@ -33,6 +39,7 @@ class Writer:
                   model: torch.nn.Module,
                   input_to_model: torch.Tensor = None,
                   verbose: bool = False) -> None:
+
         if cls._writer is not None:
             cls._writer.add_graph(model, input_to_model, verbose)
 

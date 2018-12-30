@@ -14,7 +14,7 @@ RUN python /root/cache-datasets.py
 
 RUN pip3 install torchvision torch click nose \
                  fs scipy numpy attrs pylint \
-                 flake8 mypy matplotlib tqdm
+                 flake8 mypy tqdm
 RUN pip3 install tensorboardX tensorboard tensorflow
 COPY . /app
 WORKDIR /app

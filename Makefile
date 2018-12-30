@@ -61,6 +61,7 @@ sync:
 		  --exclude .mypy_cache \
 		  --exclude .idea \
 		  --exclude .cache \
+		  --exclude results \
 		  -r --progress -a \
 		  results . riri@learnbox:~/Documents/cyclegan
 
@@ -70,7 +71,7 @@ flake:
 	flake8 src tests
 
 lint:
-	pylint src
+	pylint src tests
 
 types:
 	mypy --ignore-missing-imports --strict src/cyclegan tests

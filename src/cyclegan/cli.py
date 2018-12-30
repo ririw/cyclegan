@@ -17,26 +17,27 @@ from cyclegan import training, generators, discriminators, datasets, monitoring
 @click.option('--cuda/--no-cuda', help='Use CUDA', default=False)
 @click.option('--debug/--no-debug', help='debug mode', default=False)
 def main(cuda: bool, debug: bool) -> int:
-    a_dom = training.DomainPair(
-        generators.FashionMNISTMNISTTransform(),
+    a_dom = training.MNISTDomain(
+        generators.MnistSvhnTransform(),
         discriminators.MNISTDiscriminator()
     )
-    b_dom = training.DomainPair(
-        generators.MNISTMNISTTransform(),
-        discriminators.MNISTDiscriminator()
+    b_dom = training.SVHNDomain(
+        generators.SvhnMnistTransform(),
+        discriminators.SVHNDiscriminator()
     )
+
     monitoring.Writer.init('./results/{}'.format(datetime.datetime.now()))
 
     train_a = datasets.mnist(download=True).train_data
-    train_b = datasets.fmnist(download=True).train_data
-    a_data = train_a.type(torch.float32).contiguous() / 255
-    b_data = train_b.type(torch.float32).contiguous() / 255
+    train_b = torch.from_numpy(datasets.svhn(download=True).data)
+    a_data = train_a.type(torch.float32) / 255
+    b_data = train_b.type(torch.float32) / 255
 
     trainer = training.CycleGanTrainer(a_dom, b_dom, use_cuda=cuda)
 
-    n_iter = 4 if debug else 8192
+    n_iter = 4 if debug else 8192*2
     with fs.open_fs('file://./results', create=True) as res_fs:
-        for i in tqdm(range(n_iter), smoothing=0.6):
+        for i in tqdm(range(n_iter), smoothing=0.9):
             monitoring.Writer.step = i
             try:
                 train_step(a_data, b_data, i, res_fs, trainer)
